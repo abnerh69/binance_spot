@@ -9,6 +9,15 @@ class Balance {
       : asset = m['asset'] ?? m['a'],
         free = double.parse(m['free'] ?? m['f']),
         locked = double.parse(m['locked'] ?? m['l']);
+
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> map = {
+      'asset': asset,
+      'free': free,
+      'locked': locked,
+    };
+    return map;
+  }
 }
 
 class AggTrade {
@@ -30,6 +39,20 @@ class AggTrade {
         timestamp = m['T'],
         isBuyerMaker = m['m'],
         isBestPriceMatch = m['M'];
+
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> map = {
+      'tradeId': tradeId,
+      'price': price,
+      'qty': qty,
+      'firstTradeId': firstTradeId,
+      'lastTradeId': lastTradeId,
+      'timestamp': timestamp,
+      'isBuyerMaker': isBuyerMaker,
+      'isBestPriceMatch': isBestPriceMatch,
+    };
+    return map;
+  }
 }
 
 class WsAccountUpdate {
@@ -44,6 +67,20 @@ class WsAccountUpdate {
         lastUpdateTime = m['u'],
         balances =
             (m['B'] as List<dynamic>).map((e) => Balance.fromMap(e)).toList();
+
+  Map<String, dynamic> toMap() {
+    List listBalances = [];
+    for (var balance in balances) {
+      listBalances.add(balance.toMap());
+    }
+    Map<String, dynamic> map = {
+      'eventType': eventType,
+      'eventTime': eventTime,
+      'lastUpdateTime': lastUpdateTime,
+      'balances': listBalances,
+    };
+    return map;
+  }
 }
 
 class WsBalanceUpdate {
@@ -59,6 +96,17 @@ class WsBalanceUpdate {
         asset = m['a'],
         delta = double.parse(m['d']),
         clearTime = m['T'];
+
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> map = {
+      'eventType': eventType,
+      'eventTime': eventTime,
+      'asset': asset,
+      'delta': delta,
+      'clearTime': clearTime,
+    };
+    return map;
+  }
 }
 
 class WsExecutionReport {
@@ -124,6 +172,42 @@ class WsExecutionReport {
         cumQuoteAssetQty = double.parse(m['Z']),
         lastQuoteAssetQty = double.parse(m['Y']),
         quoteQty = double.parse(m['Q']);
+
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> map = {
+      'eventType': eventType,
+      'eventTime': eventTime,
+      'symbol': symbol,
+      'clientOrderId': clientOrderId,
+      'side': side,
+      'orderType': orderType,
+      'TimeInForce': timeInForce,
+      'qty': qty,
+      'price': price,
+      'stopPrice': stopPrice,
+      'icebergQty': icebergQty,
+      'orderListID': orderListID,
+      'origClientOrderId': origClientOrderId,
+      'executionType': executionType,
+      'orderStatus': orderStatus,
+      'orderRejectReason': orderRejectReason,
+      'orderId': orderId,
+      'lastExecutedQty': lastExecutedQty,
+      'cumFilledQty': cumFilledQty,
+      'lastExecutedPrice': lastExecutedPrice,
+      'commissionAmount': commissionAmount,
+      'commissionAsset': commissionAsset,
+      'transactionTime': transactionTime,
+      'tradeId': tradeId,
+      'isOnTheBook': isOnTheBook,
+      'isMakerSide': isMakerSide,
+      'orderCreationTime': orderCreationTime,
+      'cumQuoteAssetQty': cumQuoteAssetQty,
+      'lastQuoteAssetQty': lastQuoteAssetQty,
+      'quoteQty': quoteQty,
+    };
+    return map;
+  }
 }
 
 class WsOcoOrder {
@@ -135,6 +219,15 @@ class WsOcoOrder {
       : symbol = m['s'],
         orderId = m['i'],
         clientOrderId = m['c'];
+
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> map = {
+      'symbol': symbol,
+      'orderId': orderId,
+      'clientOrderId': clientOrderId,
+    };
+    return map;
+  }
 }
 
 class WsListOrderStatus {
@@ -164,12 +257,42 @@ class WsListOrderStatus {
         orders = (m['O'] as List<dynamic>)
             .map((e) => WsOcoOrder.fromMap(e))
             .toList();
+
+  Map<String, dynamic> toMap() {
+    List listOrders = [];
+    for (var order in orders) {
+      listOrders.add(order.toMap());
+    }
+    Map<String, dynamic> map = {
+      'eventType': eventType,
+      'eventTime': eventTime,
+      'symbol': symbol,
+      'orderListId': orderListId,
+      'contingencyType': contingencyType,
+      'listStatusType': listStatusType,
+      'listOrderStatus': listOrderStatus,
+      'listRejectReason': listRejectReason,
+      'listClientOrderId': listClientOrderId,
+      'transactionTime': transactionTime,
+      'orders': listOrders,
+    };
+    return map;
+  }
 }
 
 class DepthOrder {
   double price;
   double qty;
+
   DepthOrder.fromList(List l)
       : price = l[0],
         qty = l[1];
+
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> map = {
+      'price': price,
+      'qty': qty,
+    };
+    return map;
+  }
 }

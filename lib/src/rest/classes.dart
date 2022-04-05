@@ -44,6 +44,7 @@ class Symbol {
 class Filter {
   String type;
   Map<String, dynamic> data;
+
   Filter.fromMap(m)
       : type = m["filterType"],
         data = m;
@@ -237,7 +238,7 @@ class Order {
         timeInForce = (m['timeInForce'] as String).toTimeInForceEnum(),
         type = (m['type'] as String).toOrderTypeEnum(),
         side = (m['side'] as String).toSideEnum(),
-        stopPrice = m['stopPrice'];
+        stopPrice = double.tryParse(m['stopPrice'] ?? '0');
 }
 
 class CanceledOrder {
@@ -351,6 +352,99 @@ class OcoOrder {
                 .map((e) => Order.fromMap(e))
                 .toList()
             : [];
+}
+
+class MarginOcoOrder {
+  /// {
+  ///   "orderListId": 0,
+  ///   "contingencyType": "OCO",
+  ///   "listStatusType": "EXEC_STARTED",
+  ///   "listOrderStatus": "EXECUTING",
+  ///   "listClientOrderId": "JYVpp3F0f5CAG15DhtrqLp",
+  ///   "transactionTime": 1563417480525,
+  ///   "symbol": "LTCBTC",
+  ///   "marginBuyBorrowAmount": "5",       /// will not return if no margin trade happens
+  ///   "marginBuyBorrowAsset": "BTC",    /// will not return if no margin trade happens
+  ///   "isIsolated": false,       /// if isolated margin
+  ///   "orders": [
+  ///     {
+  ///       "symbol": "LTCBTC",
+  ///       "orderId": 2,
+  ///       "clientOrderId": "Kk7sqHb9J6mJWTMDVW7Vos"
+  ///     },
+  ///     {
+  ///       "symbol": "LTCBTC",
+  ///       "orderId": 3,
+  ///       "clientOrderId": "xTXKaGYd4bluPVp78IVRvl"
+  ///     }
+  ///   ],
+  ///   "orderReports": [
+  ///     {
+  ///       "symbol": "LTCBTC",
+  ///       "orderId": 2,
+  ///       "orderListId": 0,
+  ///       "clientOrderId": "Kk7sqHb9J6mJWTMDVW7Vos",
+  ///       "transactTime": 1563417480525,
+  ///       "price": "0.000000",
+  ///       "origQty": "0.624363",
+  ///       "executedQty": "0.000000",
+  ///       "cummulativeQuoteQty": "0.000000",
+  ///       "status": "NEW",
+  ///       "timeInForce": "GTC",
+  ///       "type": "STOP_LOSS",
+  ///       "side": "BUY",
+  ///       "stopPrice": "0.960664"
+  ///     },
+  ///     {
+  ///       "symbol": "LTCBTC",
+  ///       "orderId": 3,
+  ///       "orderListId": 0,
+  ///       "clientOrderId": "xTXKaGYd4bluPVp78IVRvl",
+  ///       "transactTime": 1563417480525,
+  ///       "price": "0.036435",
+  ///       "origQty": "0.624363",
+  ///       "executedQty": "0.000000",
+  ///       "cummulativeQuoteQty": "0.000000",
+  ///       "status": "NEW",
+  ///       "timeInForce": "GTC",
+  ///       "type": "LIMIT_MAKER",
+  ///       "side": "BUY"
+  ///     }
+  ///   ]
+  /// }
+  int orderListId;
+  String contingencyType;
+  OcoStatus listStatusType;
+  OcoOrderStatus listOrderStatus;
+  String listClientOrderId;
+  int transactionTime;
+  String symbol;
+  String marginBuyBorrowAmount;
+  String marginBuyBorrowAsset;
+  List<OrderInfo> orders;
+  List<Order> orderReports;
+  bool isIsolated;
+
+  MarginOcoOrder.fromMap(Map m)
+      : orderListId = m['orderListId'],
+        contingencyType = m['contingencyType'],
+        listStatusType = (m['listStatusType'] as String).toOcoStatusEnum(),
+        listOrderStatus =
+            (m['listOrderStatus'] as String).toOcoOrderStatusEnum(),
+        listClientOrderId = m['listClientOrderId'],
+        transactionTime = m['transactionTime'],
+        symbol = m['symbol'],
+        orders = (m['orders'] as List<dynamic>)
+            .map((e) => OrderInfo.fromMap(e))
+            .toList(),
+        orderReports = m.containsKey('orderReports')
+            ? (m['orderReports'] as List<dynamic>)
+                .map((e) => Order.fromMap(e))
+                .toList()
+            : [],
+        marginBuyBorrowAmount = m['marginBuyBorrowAmount'],
+        marginBuyBorrowAsset = m['marginBuyBorrowAsset'],
+        isIsolated = m['isIsolated'];
 }
 
 class AccountInfo {

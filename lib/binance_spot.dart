@@ -12,6 +12,8 @@ export 'src/rest/endpoints/fiat.dart';
 export 'src/rest/endpoints/market.dart';
 export 'src/rest/endpoints/subaccount.dart';
 export 'src/rest/endpoints/trade.dart';
+export 'src/rest/endpoints/margin_trade.dart';
+export 'src/rest/endpoints/isolated_margin_userdatastream.dart';
 export 'src/rest/endpoints/userdatastream.dart';
 export 'src/rest/endpoints/wallet.dart';
 
